@@ -1,0 +1,41 @@
+name: Update Synch server
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: self-host-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Download the latest Synch source
+        run: |
+          curl --fail --silent --show-error --location \
+            --output /tmp/upstream.tar.gz \
+            https://github.com/hjinco/synch/archive/refs/heads/main.tar.gz
+          mkdir -p /tmp/upstream
+          tar -xzf /tmp/upstream.tar.gz -C /tmp/upstream --strip-components=1
+
+      - name: Sync files from upstream
+        run: node /tmp/upstream/apps/api/scripts/self-host-update.mjs /tmp/upstream/apps/api "$GITHUB_WORKSPACE"
+
+      - name: Commit and push the update
+        run: |
+          git add -A -- . ':(exclude).github/workflows'
+          if git diff --cached --quiet; then
+            echo "Already up to date; nothing to push."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Synch server"
+          git push
