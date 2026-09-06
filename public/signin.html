@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Sign In - Synch</title>
+		<link rel="stylesheet" href="/styles.css" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<script src="/i18n.js"></script>
+	</head>
+	<body>
+		<div class="page page--narrow">
+			<div class="page-header">
+				<a href="https://synch.run/" class="brand">Synch</a>
+				<h1 class="page-title" data-i18n="title">Welcome back</h1>
+				<p class="page-subtitle" data-i18n="subtitle">Sign in to your account to continue</p>
+			</div>
+
+			<form id="sign-in-form" class="form">
+				<div class="field">
+					<label for="email" class="label" data-i18n="email">Email</label>
+					<input type="email" id="email" name="email" required autocomplete="email" class="input" placeholder="you@example.com" />
+				</div>
+				
+				<div class="field">
+					<div class="label-row">
+						<label for="password" class="label" data-i18n="password">Password</label>
+					</div>
+					<input type="password" id="password" name="password" required autocomplete="current-password" class="input" placeholder="••••••••" />
+				</div>
+
+				<div id="status" class="status" aria-live="polite"></div>
+
+				<button type="submit" class="btn btn--primary btn--block" data-i18n="submit">
+					Sign In
+				</button>
+
+				<div id="success-container" class="success-panel hidden">
+					<div class="success-title" data-i18n="verificationRequired">Email verification required</div>
+					<div class="success-body" data-i18n="checkInbox">Please check your inbox for the verification link.</div>
+					
+					<div id="resend-container" class="resend">
+						<button id="resend-button" type="button" class="link-button" data-i18n="resendVerification">
+							Resend verification email
+						</button>
+						<div id="resend-message" class="resend-message hidden"></div>
+					</div>
+				</div>
+			</form>
+
+			<div class="auth-footer">
+				<span data-i18n="noAccount">Don't have an account?</span> <a id="signup-link" href="/signup" data-i18n="signUp">Sign up</a>
+			</div>
+		</div>
+
+		<script>
+			// Inline English doubles as the initial render and the fallback
+			// catalog; other locales are fetched from /i18n/<locale>.json.
+			const { locale, createTranslator } = window.synchI18n;
+			const { t, ready: translationsReady } = createTranslator("signin", {
+				title: "Welcome back",
+				subtitle: "Sign in to your account to continue",
+				email: "Email",
+				password: "Password",
+				submit: "Sign In",
+				verificationRequired: "Email verification required",
+				checkInbox: "Please check your inbox for the verification link.",
+				resendVerification: "Resend verification email",
+				noAccount: "Don't have an account?",
+				signUp: "Sign up",
+				resendAvailableIn: "Resend available in {seconds}s",
+				sending: "Sending...",
+				failedToResend: "Failed to resend",
+				resent: "Verification email resent.",
+				apiUnavailable: "Unable to reach the API.",
+				apiUnavailableWithHint: "Unable to reach the API. Check the server URL and try again.",
+				loggingIn: "Logging in...",
+				authFailed: "Authentication failed.",
+				verificationRequiredButton: "Verification Required",
+				loggedInRedirecting: "Logged in. Redirecting...",
+				requestFailed: "Request failed.",
+			});
+			const form = document.querySelector("#sign-in-form");
+			const status = document.querySelector("#status");
+			const signupLink = document.querySelector("#signup-link");
+			const successContainer = document.querySelector("#success-container");
+			const resendButton = document.querySelector("#resend-button");
+			const resendMessage = document.querySelector("#resend-message");
+			let returnTo = "";
+
+			let isSuccessState = false;
+			let resendCooldown = 0;
+			let resendInterval;
+			let currentEmail = "";
+
+			applyTranslations();
+			// Wait for the locale catalog before the first dynamic render so
+			// status text set by the page flow never sticks in English.
+			void translationsReady.then(() => {
+				applyTranslations();
+				void initializePage();
+			});
+
+			function startResendCooldown() {
+				if (!resendButton) return;
+				resendCooldown = 30;
+				resendButton.disabled = true;
+				
+				if (resendInterval) clearInterval(resendInterval);
+				
+				resendInterval = setInterval(() => {
+					resendCooldown -= 1;
+					if (resendCooldown <= 0) {
+						clearInterval(resendInterval);
+						resendButton.disabled = false;
+						resendButton.textContent = t("resendVerification");
+					} else {
+						resendButton.textContent = t("resendAvailableIn", { seconds: resendCooldown });
+					}
+				}, 1000);
+			}
+
+			resendButton?.addEventListener("click", async () => {
+				if (resendCooldown > 0 || !currentEmail) return;
+				
+				resendButton.disabled = true;
+				if (resendMessage) {
+					resendMessage.textContent = t("sending");
+					resendMessage.classList.remove("hidden", "status--error");
+				}
+
+				try {
+					const response = await fetch("/api/auth/send-verification-email", {
+						method: "POST",
+						credentials: "include",
+						headers: {
+							"content-type": "application/json",
+						},
+						body: JSON.stringify({ 
+							email: currentEmail,
+							callbackURL: returnTo || "/",
+						}),
+					});
+
+					if (!response.ok) {
+						if (resendMessage) {
+							resendMessage.textContent = await readErrorMessage(response, t("failedToResend"));
+							resendMessage.classList.add("status--error");
+						}
+						resendButton.disabled = false;
+						return;
+					}
+
+					if (resendMessage) {
+						resendMessage.textContent = t("resent");
+						resendMessage.classList.remove("status--error");
+					}
+					startResendCooldown();
+				} catch {
+					if (resendMessage) {
+						resendMessage.textContent = t("apiUnavailable");
+						resendMessage.classList.add("status--error");
+					}
+					resendButton.disabled = false;
+				}
+			});
+
+			form?.addEventListener("submit", (event) => {
+				event.preventDefault();
+				void submitAuth();
+			});
+
+			function applyTranslations() {
+				for (const element of document.querySelectorAll("[data-i18n]")) {
+					element.textContent = t(element.dataset.i18n);
+				}
+				document.title = `${t("submit")} - Synch`;
+			}
+
+			async function initializePage() {
+				returnTo = loadReturnTo();
+				if (signupLink && returnTo) {
+					const signupUrl = new URL("/signup", window.location.origin);
+					signupUrl.searchParams.set("return_to", returnTo);
+					signupUrl.searchParams.set("lang", locale);
+					signupLink.href = signupUrl.toString();
+				}
+
+				try {
+					const response = await fetch("/api/auth/get-session", { credentials: "include" });
+					const session = response.ok ? await response.json() : null;
+					if (session?.user && returnTo) {
+						window.location.assign(returnTo);
+					}
+				} catch {
+					// Ignore session checks; explicit form submission will surface errors.
+				}
+			}
+
+			function loadReturnTo() {
+				const params = new URLSearchParams(window.location.search);
+				const requested = params.get("return_to") || params.get("callbackURL") || "";
+				const fallback = new URL("/vaults", window.location.origin);
+				fallback.searchParams.set("lang", locale);
+				if (!requested.trim()) {
+					return fallback.toString();
+				}
+
+				try {
+					const parsed = new URL(requested, window.location.href);
+					return parsed.origin === window.location.origin ? parsed.toString() : fallback.toString();
+				} catch {
+					return fallback.toString();
+				}
+			}
+
+			async function submitAuth() {
+				const body = Object.fromEntries(new FormData(form).entries());
+				body.callbackURL = returnTo || "/";
+				setSubmitting(true);
+				setStatus(t("loggingIn"));
+				try {
+					const response = await fetch("/api/auth/sign-in/email", {
+						method: "POST",
+						credentials: "include",
+						headers: {
+							"content-type": "application/json",
+						},
+						body: JSON.stringify(body),
+					});
+
+					if (!response.ok) {
+						const msg = await readErrorMessage(response, t("authFailed"));
+						
+						if (msg.toLowerCase().includes("verify") || msg.toLowerCase().includes("verified")) {
+							isSuccessState = true;
+							setStatus("");
+							
+							for (const element of form.elements) {
+								if (element.id === "resend-button") continue;
+								if (element instanceof HTMLInputElement || element instanceof HTMLButtonElement) {
+									element.disabled = true;
+								}
+							}
+							
+							const submitBtn = form.querySelector('button[type="submit"]');
+							if (submitBtn) {
+								submitBtn.textContent = t("verificationRequiredButton");
+								submitBtn.classList.add("btn--muted");
+							}
+
+							currentEmail = body.email;
+							
+							if (successContainer) {
+								successContainer.classList.remove("hidden");
+							}
+							startResendCooldown();
+						} else {
+							setStatus(msg, true);
+						}
+						return;
+					}
+
+					setStatus(t("loggedInRedirecting"));
+					window.location.assign(returnTo || "/");
+				} catch {
+					setStatus(t("apiUnavailableWithHint"), true);
+				} finally {
+					setSubmitting(false);
+				}
+			}
+
+			function setStatus(message, isError = false) {
+				status.classList.toggle("status--error", isError);
+				status.textContent = message;
+			}
+
+			function setSubmitting(submitting) {
+				if (isSuccessState) return;
+				for (const element of form.elements) {
+					if (element.id === "resend-button") continue;
+					if (element instanceof HTMLInputElement || element instanceof HTMLButtonElement) {
+						element.disabled = submitting;
+					}
+				}
+			}
+
+			async function readErrorMessage(response, fallback = t("requestFailed")) {
+				try {
+					const json = await response.json();
+					return json.message || json.error_description || json.error || fallback;
+				} catch {
+					return fallback;
+				}
+			}
+		</script>
+	</body>
+</html>

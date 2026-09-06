@@ -1,0 +1,77 @@
+{
+	"name": "syn",
+	"version": "0.0.0",
+	"private": true,
+	"packageManager": "pnpm@10.33.0",
+	"scripts": {
+		"build:node": "node ./scripts/build-node.mjs",
+		"build:public": "node ./scripts/build-public.mjs",
+		"check:public": "node ./scripts/build-public.mjs --check",
+		"build:cloudflare:community": "wrangler deploy --dry-run --env \"\" --outdir dist/cloudflare-community",
+		"build:cloudflare:managed": "wrangler deploy --dry-run --env managed --outdir dist/cloudflare-managed",
+		"db:generate": "drizzle-kit generate",
+		"db:generate:do": "drizzle-kit generate --config=./drizzle-do.config.ts",
+		"db:migrate:cloudflare:local": "wrangler d1 migrations apply DB --local --env managed",
+		"db:migrate:cloudflare:community": "node ./scripts/migrate-cloudflare-community.mjs",
+		"db:migrate:cloudflare:managed": "wrangler d1 migrations apply synch-db --remote --env managed",
+		"db:studio": "drizzle-kit studio",
+		"dev:cloudflare:managed": "wrangler dev --env managed --var DEV_MODE:true",
+		"dev:node": "tsx --env-file=.env src/self-host.ts",
+		"dev": "pnpm run dev:cloudflare:managed",
+		"deploy:cloudflare:community": "wrangler deploy && pnpm run db:migrate:cloudflare:community",
+		"upgrade:cloudflare:community": "wrangler deploy && pnpm run db:migrate:cloudflare:community",
+		"deploy:cloudflare:managed": "wrangler deploy --env managed && pnpm run db:migrate:cloudflare:managed",
+		"deploy": "pnpm run deploy:cloudflare:community",
+		"test:integration:cloudflare": "vitest run --config ./vitest.config.mts",
+		"test:integration:cloudflare:watch": "vitest --config ./vitest.config.mts",
+		"test:unit": "vitest run --config ./vitest.unit.config.mts --exclude test/self-host/**/*.test.ts",
+		"test:e2e:node": "vitest run --config ./vitest.unit.config.mts test/self-host",
+		"cf-typegen": "wrangler types",
+		"typecheck": "pnpm run cf-typegen && tsgo --noEmit",
+		"start:node": "node dist/server.mjs",
+		"start": "pnpm run start:node"
+	},
+	"cloudflare": {
+		"bindings": {
+			"AUTH_ALLOWED_EMAILS": {
+				"description": "Comma-separated email addresses allowed to create accounts, for example `you@example.com,family@example.com`."
+			},
+			"BETTER_AUTH_SECRET": {
+				"description": "Generate a random secret for Better Auth session signing, for example `openssl rand -hex 32`."
+			},
+			"SYNC_TOKEN_SECRET": {
+				"description": "Generate a separate random secret for sync websocket token signing, for example `openssl rand -hex 32`."
+			}
+		}
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.14.6",
+		"@types/better-sqlite3": "^7.6.13",
+		"@types/node": "^25.6.0",
+		"@types/ws": "^8.18.1",
+		"@typescript/native-preview": "^7.0.0-dev.20260423.1",
+		"dotenv": "^17.4.2",
+		"drizzle-kit": "^0.31.10",
+		"esbuild": "^0.28.1",
+		"tsx": "^4.21.0",
+		"typescript": "^5.9.3",
+		"vitest": "^4.1.4",
+		"wrangler": "^4.82.2"
+	},
+	"dependencies": {
+		"@better-auth/drizzle-adapter": "1.7.1",
+		"@hono/node-server": "^2.0.12",
+		"@hono/zod-validator": "^0.7.6",
+		"@libsql/client": "^0.15.15",
+		"@polar-sh/better-auth": "^1.8.3",
+		"@polar-sh/sdk": "^0.46.7",
+		"aws4fetch": "^1.0.20",
+		"better-auth": "1.7.1",
+		"better-sqlite3": "^12.4.1",
+		"drizzle-orm": "^0.45.2",
+		"hono": "^4.12.14",
+		"jose": "^6.2.2",
+		"ws": "^8.20.0",
+		"zod": "^4.3.6"
+	}
+}
