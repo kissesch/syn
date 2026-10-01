@@ -8,7 +8,7 @@ import {
 import { apiAuthPageHeaders, expectDeviceVerificationUrl } from "./helpers";
 
 describe("auth device approval integration", () => {
-	it("supports device approval through the verifier page", async () => {
+	it.each(["/api/auth", "/v1/auth"])("supports device approval through %s", async (authPath) => {
 		const deviceCode = await jsonRequest<{
 			device_code: string;
 			user_code: string;
@@ -16,7 +16,7 @@ describe("auth device approval integration", () => {
 			verification_uri_complete: string;
 			expires_in: number;
 			interval: number;
-		}>("/api/auth/device/code", {
+		}>(`${authPath}/device/code`, {
 			method: "POST",
 			headers: {
 				"content-type": "application/json",
@@ -48,7 +48,7 @@ describe("auth device approval integration", () => {
 		const browserSessionCookie = account.sessionCookie;
 
 		const verifiedDevice = await jsonRequest<{ user_code: string; status: string }>(
-			`/api/auth/device?user_code=${deviceCode.json?.user_code}`,
+			`${authPath}/device?user_code=${deviceCode.json?.user_code}`,
 			{
 				headers: {
 					cookie: browserSessionCookie,
@@ -79,7 +79,7 @@ describe("auth device approval integration", () => {
 		const vaultId = createVaultResponse.json?.vault.id ?? "";
 		expect(vaultId).toBeTruthy();
 
-		const approveResponse = await jsonRequest<{ success: boolean }>("/api/auth/device/approve", {
+		const approveResponse = await jsonRequest<{ success: boolean }>(`${authPath}/device/approve`, {
 			method: "POST",
 			headers: {
 				"content-type": "application/json",
@@ -94,7 +94,7 @@ describe("auth device approval integration", () => {
 		expect(approveResponse.json?.success).toBe(true);
 
 		const approvedDevice = await jsonRequest<{ user_code: string; status: string }>(
-			`/api/auth/device?user_code=${deviceCode.json?.user_code}`,
+			`${authPath}/device?user_code=${deviceCode.json?.user_code}`,
 			{
 				headers: {
 					...apiAuthPageHeaders(),
@@ -108,7 +108,7 @@ describe("auth device approval integration", () => {
 			access_token: string;
 			expires_in: number;
 			scope: string;
-		}>("/api/auth/device/token", {
+		}>(`${authPath}/device/token`, {
 			method: "POST",
 			headers: {
 				"content-type": "application/json",

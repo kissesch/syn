@@ -1,6 +1,5 @@
 import { polar, webhooks } from "@polar-sh/better-auth";
-import { Polar } from "@polar-sh/sdk";
-import type { Subscription } from "@polar-sh/sdk/models/components/subscription";
+import { createPolarCore, type models } from "@polar-sh/sdk/2026-10";
 import type { BetterAuthPlugin } from "better-auth";
 
 import type { BillingProviderConfig } from "../../../application/dto/billing";
@@ -18,11 +17,11 @@ export function createPolarWebhookPlugin(
 		return null;
 	}
 
-	const client = new Polar({
+	const client = createPolarCore({
 		accessToken: config.accessToken,
-		server: config.sandbox ? "sandbox" : "production",
+		environment: config.sandbox ? "sandbox" : "production",
 	});
-	const handleSubscription = async (payload: { data: Subscription }) => {
+	const handleSubscription = async (payload: { data: models.Subscription }) => {
 		const organizationId = organizationIdFromPolarSubscription(payload.data);
 		if (!organizationId) {
 			return;

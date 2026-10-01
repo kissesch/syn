@@ -6,14 +6,14 @@ import {
 	signUpAndCreateVault,
 } from "../../helpers/api";
 
-describe("auth session integration", () => {
+describe.each(["/api/auth", "/v1/auth"])("auth session integration through %s", (authPath) => {
 	it("creates a session at sign-up and clears it at sign-out", async () => {
 		const account = await signUpAccount();
 
 		const session = await jsonRequest<{
 			session: { activeOrganizationId?: string | null };
 			user: { email: string };
-		}>("/api/auth/get-session", {
+		}>(`${authPath}/get-session`, {
 			headers: {
 				cookie: account.sessionCookie,
 			},
@@ -23,7 +23,7 @@ describe("auth session integration", () => {
 		expect(session.json?.session?.activeOrganizationId).toBeTruthy();
 
 		const organizations = await jsonRequest<Array<{ id: string; slug: string }>>(
-			"/api/auth/organization/list",
+			`${authPath}/organization/list`,
 			{
 				headers: {
 					cookie: account.sessionCookie,
@@ -34,7 +34,7 @@ describe("auth session integration", () => {
 		expect(organizations.json).toHaveLength(1);
 		expect(organizations.json?.[0]?.id).toBe(session.json?.session?.activeOrganizationId);
 
-		const signOut = await jsonRequest("/api/auth/sign-out", {
+		const signOut = await jsonRequest(`${authPath}/sign-out`, {
 			method: "POST",
 			headers: {
 				"content-type": "application/json",
@@ -44,7 +44,7 @@ describe("auth session integration", () => {
 		});
 		expect(signOut.response.status).toBe(200);
 
-		const sessionAfterSignOut = await jsonRequest("/api/auth/get-session", {
+		const sessionAfterSignOut = await jsonRequest(`${authPath}/get-session`, {
 			headers: {
 				cookie: account.sessionCookie,
 			},
@@ -63,7 +63,7 @@ describe("auth session integration", () => {
 
 		const session = await jsonRequest<{
 			user: { email: string };
-		}>("/api/auth/get-session", {
+		}>(`${authPath}/get-session`, {
 			headers: {
 				authorization: `Bearer ${sessionCookieValue(bearerAccount.sessionCookie)}`,
 				cookie: cookieAccount.sessionCookie,

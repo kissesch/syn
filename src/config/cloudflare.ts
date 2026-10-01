@@ -23,12 +23,18 @@ export type CloudflareRuntimeEnv = Omit<
 	| "ADMIN_TOKEN"
 > & {
 	AUTH_ALLOWED_EMAILS?: string;
+	GOOGLE_CLIENT_ID?: string;
+	GOOGLE_CLIENT_SECRET?: string;
+	GITHUB_CLIENT_ID?: string;
+	GITHUB_CLIENT_SECRET?: string;
 	EMAIL?: SendEmail;
 	AUTH_EMAIL_FROM?: string;
 	DEV_MODE?: boolean | string;
 	WWW_BASE_URL?: string;
 	POLAR_ACCESS_TOKEN?: string;
 	POLAR_WEBHOOK_SECRET?: string;
+	POLAR_PLUS_MONTHLY_PRODUCT_ID?: string;
+	POLAR_PLUS_ANNUAL_PRODUCT_ID?: string;
 	POLAR_STARTER_MONTHLY_PRODUCT_ID?: string;
 	POLAR_STARTER_ANNUAL_PRODUCT_ID?: string;
 	POLAR_SANDBOX?: string;

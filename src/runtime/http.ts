@@ -35,6 +35,10 @@ export function createRuntimeApp(env: CloudflareRuntimeEnv, request: Request) {
 					new Set([config.publicOrigin, config.corsOrigin]),
 				),
 				devMode: config.devMode,
+				googleClientId: env.GOOGLE_CLIENT_ID,
+				googleClientSecret: env.GOOGLE_CLIENT_SECRET,
+				githubClientId: env.GITHUB_CLIENT_ID,
+				githubClientSecret: env.GITHUB_CLIENT_SECRET,
 				email: env.EMAIL,
 				emailFrom: env.AUTH_EMAIL_FROM,
 				allowedEmails:

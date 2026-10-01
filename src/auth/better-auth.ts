@@ -1,9 +1,9 @@
 import { asc, eq } from "drizzle-orm";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
-import { APIError } from "better-auth/api";
+import { APIError, createAuthMiddleware } from "better-auth/api";
 import type { BetterAuthPlugin } from "better-auth";
-import { bearer, deviceAuthorization, organization } from "better-auth/plugins";
+import { bearer, deviceAuthorization, lastLoginMethod, organization } from "better-auth/plugins";
 
 import type { AppDb } from "../db/client";
 import * as schema from "../db/d1";
@@ -35,6 +35,10 @@ export type AuthFeatureConfig = {
 	email?: EmailSender;
 	emailFrom?: string;
 	allowedEmails?: string;
+	googleClientId?: string;
+	googleClientSecret?: string;
+	githubClientId?: string;
+	githubClientSecret?: string;
 };
 
 export type AuthPlugin = BetterAuthPlugin;
@@ -49,6 +53,28 @@ export function createBetterAuth(db: AppDb, config: BetterAuthConfig) {
 	const emailVerification = createEmailVerificationConfig(config);
 	const allowedEmails = parseAllowedEmails(config.allowedEmails);
 	const auth = betterAuth({
+		socialProviders: {
+			google: optionalOAuthProvider(config.baseURL, "google", config.googleClientId, config.googleClientSecret),
+			github: optionalOAuthProvider(config.baseURL, "github", config.githubClientId, config.githubClientSecret),
+		},
+		user: {
+			validateUserInfo: ({ user, source }) => {
+				// Check the current provider assertion on both signup and returning login.
+				if (source.method === "oauth" && user.emailVerified !== true) {
+					return {
+						error: "email_not_verified",
+						errorDescription: "Verify your email with your sign-in provider before signing in.",
+					};
+				}
+			},
+		},
+		account: {
+			accountLinking: {
+				// Community deployments disable email verification and restrict sign-up
+				// with an allowlist. Provider-verified email is still required to link.
+				requireLocalEmailVerified: config.emailVerification === "required",
+			},
+		},
 		baseURL: config.baseURL,
 		secret: config.secret,
 		database: drizzleAdapter(db, {
@@ -64,6 +90,20 @@ export function createBetterAuth(db: AppDb, config: BetterAuthConfig) {
 		emailVerification,
 		session: {
 			expiresIn: SESSION_EXPIRES_IN_SECONDS,
+		},
+		hooks: {
+			before: createAuthMiddleware(async (ctx) => {
+				if (ctx.path !== "/sign-up/email" || typeof ctx.body?.email !== "string") return;
+				const existing = await ctx.context.internalAdapter.findUserByEmail(ctx.body.email.toLowerCase());
+				if (existing) {
+					// Return an explicit error even when email verification is required;
+					// Better Auth otherwise responds as if it sent a verification email.
+					throw APIError.from("UNPROCESSABLE_ENTITY", {
+						code: "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL",
+						message: "This email is already registered. Please sign in instead.",
+					});
+				}
+			}),
 		},
 		databaseHooks: {
 			user: {
@@ -130,6 +170,10 @@ export function createBetterAuth(db: AppDb, config: BetterAuthConfig) {
 		},
 		plugins: [
 			organization({ organizationLimit: 1 }),
+			lastLoginMethod({
+				// Managed email sign-up creates a session only after verification.
+				customResolveMethod: (ctx) => ctx.path === "/verify-email" ? "email" : null,
+			}),
 			...(config.plugins ?? []),
 			bearer(),
 			deviceAuthorization({
@@ -238,4 +282,15 @@ function escapeHtml(value: string): string {
 
 function getDeviceVerificationUri(baseURL: string): string {
 	return new URL("/device", baseURL).toString();
+}
+
+function optionalOAuthProvider(baseURL: string, provider: "google" | "github", id?: string, secret?: string) {
+	const clientId = id?.trim();
+	const clientSecret = secret?.trim();
+	return clientId && clientSecret ? {
+		clientId,
+		clientSecret,
+		// Used for both the authorization request and the token exchange.
+		redirectURI: new URL(`/v1/auth/callback/${provider}`, baseURL).toString(),
+	} : undefined;
 }

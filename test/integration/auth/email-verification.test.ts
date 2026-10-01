@@ -48,6 +48,7 @@ describe("auth email verification integration", () => {
 		expect(signUp.response.status).toBe(200);
 		expect(signUp.json?.token).toBeNull();
 		expect(extractCookieHeader(signUp.response)).not.toContain("better-auth.session_token=");
+		expect(signUp.response.headers.get("set-cookie") ?? "").not.toContain("last_used_login_method");
 		expect(emailBinding.sent).toHaveLength(1);
 		expect(emailBinding.sent[0]).toMatchObject({
 			from: "Synch <noreply@example.com>",
@@ -68,6 +69,7 @@ describe("auth email verification integration", () => {
 		);
 		expect(verified.status).toBe(302);
 		expect(verified.headers.get("location")).toBe(callbackURL);
+		expect(verified.headers.get("set-cookie")).toContain("better-auth.last_used_login_method=email");
 
 		const signIn = await jsonRequestWithEnv<{ token: string | null }>(
 			"/api/auth/sign-in/email",

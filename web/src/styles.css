@@ -1,0 +1,1035 @@
+/*
+ * Shared stylesheet for the static public pages (signin, signup, device,
+ * vaults). Hand-written replacement for the Tailwind CDN; color values mirror
+ * the Tailwind zinc palette so the pages keep the same dark look as
+ * apps/www.
+ */
+
+:root {
+	color-scheme: dark;
+	--bg: #0a0a0a;
+	--zinc-100: #f4f4f5;
+	--zinc-200: #e4e4e7;
+	--zinc-300: #d4d4d8;
+	--zinc-400: #a1a1aa;
+	--zinc-500: #71717a;
+	--zinc-600: #52525b;
+	--zinc-700: #3f3f46;
+	--zinc-800: #27272a;
+	--zinc-900: #18181b;
+	--zinc-950: #09090b;
+	--red-400: #f87171;
+	--red-900: #7f1d1d;
+	--green-400: #4ade80;
+}
+
+/* Base */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background-color: var(--bg);
+	color: var(--zinc-400);
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		"Segoe UI",
+		Roboto,
+		"Helvetica Neue",
+		Arial,
+		"Noto Sans",
+		sans-serif,
+		"Apple Color Emoji",
+		"Segoe UI Emoji",
+		"Segoe UI Symbol",
+		"Noto Color Emoji";
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	min-height: 100vh;
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+p,
+ol {
+	margin: 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: inherit;
+}
+
+button,
+input {
+	font: inherit;
+	color: inherit;
+}
+
+::selection {
+	background-color: var(--zinc-800);
+	color: var(--zinc-200);
+}
+
+[hidden],
+.hidden {
+	display: none !important;
+}
+
+/* Page layout */
+
+.page {
+	margin-inline: auto;
+	padding-inline: 1.5rem;
+	width: 100%;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.page--narrow {
+	max-width: 28rem;
+	justify-content: center;
+	padding-block: 6rem;
+}
+
+.page--medium {
+	max-width: 48rem;
+	justify-content: center;
+	padding-block: 3rem;
+}
+
+.page--wide {
+	max-width: 56rem;
+	padding-block: 3rem;
+}
+
+.page-header {
+	margin-bottom: 2rem;
+	text-align: center;
+}
+
+.page-header .brand {
+	display: inline-block;
+	margin-bottom: 2rem;
+}
+
+.brand {
+	color: var(--zinc-200);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 400;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	transition: opacity 150ms;
+}
+
+.brand:hover {
+	opacity: 0.8;
+}
+
+.page-title {
+	font-size: 1.5rem;
+	line-height: 2rem;
+	font-weight: 400;
+	letter-spacing: -0.025em;
+	color: var(--zinc-200);
+	margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+	color: var(--zinc-500);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+.page-subtitle:last-child {
+	margin-bottom: 0;
+}
+
+/* Forms */
+
+.form {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.form > .btn {
+	margin-top: 1rem;
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.label-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.label {
+	display: block;
+	font-size: 0.75rem;
+	line-height: 1rem;
+	color: var(--zinc-400);
+}
+
+dialog .label {
+	color: var(--zinc-500);
+}
+
+.input {
+	width: 100%;
+	background-color: rgb(24 24 27 / 0.5);
+	border: 1px solid var(--zinc-800);
+	border-radius: 0.25rem;
+	padding: 0.5rem 0.75rem;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	color: var(--zinc-200);
+	transition: border-color 150ms;
+}
+
+.input::placeholder {
+	color: var(--zinc-600);
+}
+
+.input:focus {
+	outline: none;
+	border-color: var(--zinc-600);
+}
+
+/* Buttons */
+
+.btn {
+	display: inline-block;
+	padding: 0.5rem 1rem;
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 500;
+	text-align: center;
+	border: none;
+	border-radius: 0.25rem;
+	background: none;
+	cursor: pointer;
+	transition:
+		color 150ms,
+		background-color 150ms,
+		border-color 150ms;
+}
+
+.btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.btn--primary {
+	background-color: var(--zinc-200);
+	color: var(--bg);
+}
+
+.btn--primary:hover:not(:disabled) {
+	background-color: #fff;
+}
+
+.btn--secondary {
+	border: 1px solid var(--zinc-700);
+	color: var(--zinc-300);
+}
+
+.btn--secondary:hover:not(:disabled) {
+	background-color: var(--zinc-800);
+}
+
+.btn--danger {
+	border: 1px solid rgb(127 29 29 / 0.5);
+	color: var(--red-400);
+}
+
+.btn--danger:hover:not(:disabled) {
+	background-color: rgb(127 29 29 / 0.2);
+}
+
+/* Inert look for the submit button once email verification is pending. */
+.btn.btn--muted {
+	background-color: var(--zinc-800);
+	color: var(--zinc-400);
+}
+
+/* Always full width, at every viewport size. */
+.btn--block {
+	width: 100%;
+}
+
+.login-method-badge {
+	display: inline-block;
+	margin-inline-start: 0.5rem;
+	padding: 0 0.375rem;
+	border: 1px solid currentColor;
+	border-radius: 0.25rem;
+	font-size: 0.625rem;
+	line-height: 1rem;
+	vertical-align: middle;
+}
+
+.approval-panel .btn {
+	white-space: nowrap;
+}
+
+.btn--compact {
+	padding: 0.375rem 1rem;
+}
+
+/* Full width on mobile only; reverts to auto at the sm breakpoint. */
+.btn--fluid {
+	width: 100%;
+}
+
+.link-button {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font-size: 0.75rem;
+	line-height: 1rem;
+	color: var(--zinc-300);
+	text-decoration: underline;
+	transition: color 150ms;
+}
+
+.link-button:hover:not(:disabled) {
+	color: #fff;
+}
+
+.link-button:disabled {
+	opacity: 0.5;
+	text-decoration: none;
+	cursor: not-allowed;
+}
+
+/* Status text */
+
+.status {
+	color: var(--zinc-400);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	text-align: center;
+	min-height: 1.5rem;
+}
+
+.status--spaced {
+	margin-bottom: 0.5rem;
+}
+
+/* Left-aligned toolbar variant used on the vaults page. */
+.status--bar {
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	text-align: left;
+	min-height: 0;
+}
+
+/* Device authorization page */
+
+.identity {
+	color: rgb(74 222 128 / 0.9);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	font-weight: 500;
+	text-align: center;
+	margin-bottom: 1.5rem;
+}
+
+.approval-panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 0.75rem;
+	margin: 0 auto 2rem;
+	max-width: 24rem;
+	width: 100%;
+}
+
+.return-panel {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.75rem;
+	margin: 0 auto 2rem;
+	max-width: 24rem;
+	width: 100%;
+}
+
+.return-hint {
+	color: var(--zinc-500);
+	font-size: 0.75rem;
+	line-height: 1.25rem;
+	text-align: center;
+}
+
+/* Sign-in / sign-up pages */
+
+.btn--social {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.625rem;
+	min-height: 2.75rem;
+	background-color: var(--zinc-900);
+	color: var(--zinc-200);
+}
+
+.form > .btn--social {
+	margin-top: 0;
+}
+
+.btn--social:focus-visible {
+	outline: 2px solid var(--zinc-400);
+	outline-offset: 3px;
+}
+
+.provider-icon {
+	flex-shrink: 0;
+}
+
+.success-panel {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 1.5rem;
+	padding: 1rem;
+	background-color: rgb(24 24 27 / 0.5);
+	border: 1px solid rgb(39 39 42 / 0.8);
+	border-radius: 0.5rem;
+	text-align: center;
+}
+
+.success-title {
+	color: var(--zinc-200);
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	margin-bottom: 0.25rem;
+}
+
+.success-body {
+	color: var(--zinc-400);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	margin-bottom: 1rem;
+}
+
+.sent-email {
+	font-weight: 500;
+	color: var(--zinc-300);
+}
+
+.resend {
+	width: 100%;
+	text-align: center;
+}
+
+.resend-message {
+	color: var(--zinc-400);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	margin-top: 0.5rem;
+}
+
+.auth-footer {
+	margin-top: 2rem;
+	text-align: center;
+	font-size: 0.75rem;
+	line-height: 1rem;
+	color: var(--zinc-500);
+}
+
+.auth-footer a {
+	color: var(--zinc-300);
+	transition: color 150ms;
+}
+
+.auth-footer a:hover {
+	color: var(--zinc-100);
+}
+
+/* Vaults page */
+
+.topbar {
+	display: flex;
+	align-items: center;
+	margin-bottom: 2rem;
+}
+
+.vaults-header {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.vaults-subtitle {
+	color: var(--zinc-500);
+	font-size: 0.875rem;
+	line-height: 1.625;
+	max-width: 42rem;
+}
+
+.user-area {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.user-badge {
+	color: var(--zinc-500);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	background-color: rgb(24 24 27 / 0.5);
+	border: 1px solid var(--zinc-800);
+	border-radius: 9999px;
+	padding: 0.375rem 0.75rem;
+	white-space: nowrap;
+}
+
+.signout-button {
+	flex-shrink: 0;
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	color: var(--zinc-500);
+	font-size: 0.75rem;
+	line-height: 1rem;
+	transition: color 150ms;
+}
+
+.signout-button:hover:not(:disabled) {
+	color: var(--zinc-300);
+}
+
+.vaults-toolbar {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+
+.vaults-actions {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.vault-list {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.vault-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1.25rem;
+	border: 1px solid var(--zinc-800);
+	border-radius: 0.75rem;
+	background-color: rgb(24 24 27 / 0.3);
+	transition: border-color 150ms;
+}
+
+.vault-card:hover {
+	border-color: var(--zinc-700);
+}
+
+.vault-name {
+	color: var(--zinc-200);
+	font-size: 1rem;
+	line-height: 1.5rem;
+	font-weight: 500;
+	margin-bottom: 0.25rem;
+}
+
+.vault-meta {
+	color: var(--zinc-500);
+	font-size: 0.75rem;
+	line-height: 1.625;
+	word-break: break-all;
+}
+
+.empty-guide {
+ margin-top: 1.5rem;
+ border: 1px solid #262626;
+ border-radius: 0.5rem;
+ background: #0a0a0a;
+ overflow: hidden;
+}
+.empty-guide-toggle { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.25rem; list-style: none; cursor: pointer; font-size: 0.875rem; font-weight: 500; color: #ededed; }
+.empty-guide-toggle::-webkit-details-marker { display: none; }
+.empty-guide-toggle:hover { background: #111; }
+.empty-guide-chevron { width: 0.375rem; height: 0.375rem; flex-shrink: 0; border-right: 1px solid #a1a1a1; border-bottom: 1px solid #a1a1a1; transform: rotate(45deg); }
+.empty-guide[open] .empty-guide-chevron { transform: rotate(225deg); }
+.empty-guide-content { border-top: 1px solid #262626; padding: 1.25rem; }
+.empty-guide-content .empty-guide-intro { padding-bottom: 1.25rem; }
+
+.empty-guide-title {
+	color: var(--zinc-200);
+	font-size: 1.125rem;
+	line-height: 1.75rem;
+	font-weight: 500;
+	margin-bottom: 0.5rem;
+}
+
+.empty-guide-intro {
+	color: var(--zinc-400);
+	font-size: 0.875rem;
+	line-height: 1.625;
+	max-width: 48rem;
+}
+
+.empty-guide-steps {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.empty-guide-step {
+	display: flex;
+	gap: 1rem;
+	padding: 1rem 0;
+}
+
+.empty-guide-step + .empty-guide-step {
+	border-top: 1px solid rgb(39 39 42 / 0.7);
+}
+
+.step-marker {
+ display: grid;
+ place-items: center;
+ height: 1.5rem;
+ width: 1.5rem;
+ flex-shrink: 0;
+ border: 1px solid #333;
+ border-radius: 0.375rem;
+ color: #a1a1a1;
+ font-size: 0.6875rem;
+ font-variant-numeric: tabular-nums;
+}
+
+.step-content {
+	min-width: 0;
+}
+
+.step-title {
+	color: var(--zinc-200);
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	font-weight: 500;
+	margin-bottom: 0.25rem;
+}
+
+.step-body {
+	color: var(--zinc-500);
+	font-size: 0.875rem;
+	line-height: 1.625;
+}
+
+/* Dialogs */
+
+dialog {
+	width: calc(100% - 2rem);
+	max-width: calc(100% - 2rem);
+	background-color: var(--bg);
+	color: var(--zinc-200);
+	border: 1px solid var(--zinc-800);
+	border-radius: 0.75rem;
+	padding: 0;
+	box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+
+dialog::backdrop {
+	background: rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(4px);
+}
+
+.dialog-body {
+	padding: 1.5rem;
+}
+
+.dialog-title {
+	font-size: 1.125rem;
+	line-height: 1.75rem;
+	font-weight: 500;
+	margin-bottom: 0.75rem;
+}
+
+.dialog-intro {
+	color: var(--zinc-400);
+	font-size: 0.875rem;
+	line-height: 1.625;
+	margin-bottom: 1.5rem;
+}
+
+.dialog-fields {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.dialog-footer {
+	display: flex;
+	justify-content: flex-end;
+	gap: 0.75rem;
+	padding: 1rem 1.5rem;
+	border-top: 1px solid rgb(39 39 42 / 0.5);
+	background-color: rgb(255 255 255 / 0.01);
+}
+
+.form-error {
+	color: var(--red-400);
+	font-size: 0.75rem;
+	line-height: 1.625;
+}
+
+.form-hint {
+	color: var(--zinc-500);
+	font-size: 0.75rem;
+	line-height: 1.625;
+}
+
+/* State classes toggled from inline scripts. Kept last so they win ties
+   against component base colors. */
+
+.status--error {
+	color: var(--red-400);
+}
+
+.status--success {
+	color: var(--green-400);
+}
+
+/* Responsive (Tailwind "sm" breakpoint) */
+
+@media (min-width: 640px) {
+	.page--medium {
+		padding-block: 6rem;
+	}
+
+	.btn--fluid {
+		width: auto;
+	}
+
+	.approval-panel {
+		flex-direction: row;
+	}
+
+	.vaults-header {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
+	.vaults-toolbar {
+		flex-direction: row;
+		align-items: center;
+	}
+
+	.vaults-actions {
+		flex-direction: row;
+	}
+
+	.vault-card {
+		flex-direction: row;
+		align-items: center;
+	}
+
+	dialog {
+		width: 480px;
+	}
+}
+
+/* Organization management keeps actions beside their scope on wide screens. */
+.org-toolbar, .org-inline, .org-row { display: flex; align-items: end; gap: 0.75rem; flex-wrap: wrap; }
+.org-toolbar { margin: 1.5rem 0; align-items: center; }
+.org-toolbar .input { width: auto; min-width: 12rem; flex: 1; }
+.org-detail { display: grid; gap: 1.25rem; margin-top: 1.25rem; }
+.org-panel { border: 1px solid var(--zinc-800); border-radius: 0.75rem; padding: 1.5rem; display: grid; gap: 1rem; }
+.org-heading { font-size: 1.125rem; font-weight: 600; color: var(--zinc-100); line-height: 1.5; }
+.org-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.org-form p { grid-column: 1 / -1; }
+.org-field { display: grid; gap: 0.5rem; flex: 1; min-width: 10rem; }
+.org-person { flex: 1; min-width: 12rem; overflow-wrap: anywhere; }
+.org-row { align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--zinc-800); }
+.org-row .input, .org-inline > .input { width: auto; }
+.org-warning { color: #fbbf24; }
+.org-panel ul { padding-left: 1.25rem; }
+@media (max-width: 600px) { .org-form { grid-template-columns: 1fr; } .org-panel { padding: 1rem; } .org-row .input { flex: 1; } }
+
+/* Shared management layout: keep vaults and organization settings consistent. */
+.management-page { max-width: 64rem; padding-block: 2rem 4rem; }
+.management-topbar { justify-content: space-between; gap: 1rem; padding-bottom: 1.25rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--zinc-800); }
+.management-page .brand { font-size: 0.8125rem; font-weight: 650; letter-spacing: 0.14em; }
+.management-page .page-title { font-size: 1.875rem; line-height: 1.3; font-weight: 600; overflow-wrap: anywhere; }
+.management-page .page-eyebrow { font-size: 0.75rem; margin-bottom: 0.5rem; color: var(--zinc-400); }
+.management-page .vaults-header { margin-bottom: 1.75rem; }
+.management-page .vaults-subtitle { color: var(--zinc-400); max-width: 40rem; }
+.management-page .user-area { min-width: 0; gap: 0.75rem; }
+.management-page .user-badge { border: 0; padding: 0; background: none; overflow: hidden; text-overflow: ellipsis; color: var(--zinc-400); }
+.management-page .signout-button { color: var(--zinc-400); min-height: 2.5rem; }
+.management-page .management-link { color: var(--zinc-300); font-size: 0.8125rem; padding-block: 0.625rem; white-space: nowrap; }
+.management-link:hover { color: white; text-decoration: underline; text-underline-offset: 4px; }
+.management-page .org-toolbar { margin: 0 0 1.75rem; padding: 1rem; border: 1px solid var(--zinc-800); border-radius: 0.625rem; background: #111113; }
+.management-page .org-toolbar .input { flex: 0 1 20rem; min-width: 0; }
+.management-page .org-toolbar .management-link { margin-left: auto; }
+.management-page .input { font-family: inherit; border-radius: 0.5rem; min-height: 2.5rem; border-color: var(--zinc-700); }
+.management-page select.input {
+ appearance: none;
+ -webkit-appearance: none;
+ padding: 0.5rem 2.5rem 0.5rem 0.75rem;
+ background-color: #18181b;
+ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+ background-repeat: no-repeat;
+ background-position: right 0.75rem center;
+ text-overflow: ellipsis;
+ cursor: pointer;
+}
+.management-page select.input:hover:not(:disabled) { border-color: var(--zinc-500); }
+.management-page select.input:disabled { cursor: not-allowed; }
+.organization-page .org-member-actions select.input { width: 10rem; max-width: 100%; }
+.management-page .input:disabled { opacity: 0.65; }
+.management-page .btn { border-radius: 0.5rem; min-height: 2.5rem; font-size: 0.8125rem; white-space: nowrap; }
+.management-page :is(a, button, summary, input, select):focus-visible { outline: 2px solid #b2b5cd; outline-offset: 4px; }
+.management-page .vaults-toolbar { gap: 1rem; margin-bottom: 1rem; }
+.management-page .vaults-actions { flex-direction: row; gap: 0.5rem; }
+.management-page .vaults-actions .btn { width: auto; }
+.management-page .vault-card { gap: 1rem; flex-direction: row; align-items: center; padding: 1.25rem 1.5rem; background: #111113; }
+.management-page .vault-info { min-width: 0; flex: 1; }
+.management-page .vault-name { overflow-wrap: anywhere; }
+.management-page .vault-meta { color: var(--zinc-400); word-break: normal; overflow-wrap: anywhere; }
+.vault-deletion-status { color: #fbbf24; font-size: 0.75rem; margin-top: 0.5rem; }
+.management-page .vault-delete { flex-shrink: 0; border-color: transparent; }
+.management-page .vault-delete:hover:not(:disabled) { border-color: rgb(127 29 29 / 0.5); }
+.management-page .step-body { color: var(--zinc-400); }
+.organization-page .org-detail { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; margin-top: 0; }
+.organization-page .org-panel { overflow: hidden; padding: 1.5rem; border: 1px solid #292929; border-radius: 0.5rem; background: #0a0a0a; gap: 1rem; align-content: start; min-width: 0; }
+.organization-page .org-heading, .organization-page .org-section-title { font-size: 1rem; font-weight: 600; letter-spacing: -0.015em; color: var(--zinc-200); }
+.organization-page .org-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; padding: 1rem 1.5rem; }
+.organization-page .org-summary .org-warning { flex-basis: 100%; padding: 0.875rem 1rem; border-left: 2px solid #b78a35; border-radius: 0.25rem; background: #201b12; font-size: 0.8125rem; line-height: 1.7; }
+.organization-page .org-billing { font-size: 0.8125rem; color: var(--zinc-300); }
+.organization-page .org-settings { flex-basis: 100%; min-width: 0; font-size: 0.8125rem; }
+.organization-page .org-settings .org-inline { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 0.75rem; }
+.organization-page .org-summary .org-billing { margin-left: auto; }
+.org-panel-heading { display: flex; align-items: center; gap: 0.625rem; }
+.organization-page .org-panel > .org-panel-heading { margin: -1.5rem -1.5rem 0; padding: 1rem 1.5rem; border-bottom: 1px solid var(--zinc-800); background: #111; }
+.org-count { padding: 0.125rem 0.5rem; border-radius: 999px; background: var(--zinc-800); color: var(--zinc-300); font-size: 0.75rem; line-height: 1.25; font-variant-numeric: tabular-nums; }
+.organization-page .org-row { padding: 1rem 0; gap: 0.75rem; }
+.organization-page .org-rows { min-width: 0; }
+.organization-page .org-rows:empty { display: none; }
+.organization-page .org-row:first-child { padding-top: 0; }
+.organization-page .org-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.organization-page .org-person { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex-basis: 12rem; }
+.person-avatar { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; flex-shrink: 0; border: 1px solid var(--zinc-700); border-radius: 50%; background: #202024; color: var(--zinc-300); font-size: 0.8125rem; }
+.org-member-actions { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.org-person-info { display: grid; gap: 0.1875rem; min-width: 0; }
+.org-person-name { font-size: 0.875rem; color: var(--zinc-200); }
+.organization-page .org-role { font-size: 0.75rem; color: var(--zinc-300); border: 1px solid var(--zinc-800); border-radius: 0.375rem; padding: 0.25rem 0.625rem; }
+.organization-page .org-form { grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.45fr) auto; align-items: end; gap: 0.75rem; }
+.organization-page .org-form > .btn { min-width: 7rem; }
+.organization-page .org-field { min-width: 0; }
+.organization-page .org-list-title { font-size: 0.8125rem; font-weight: 500; color: var(--zinc-300); margin-bottom: 0.875rem; }
+.organization-page .org-invite-form { padding-bottom: 1.25rem; border-bottom: 1px solid var(--zinc-800); }
+.organization-page .org-invitations:not(:has(.org-row)) .org-invite-form { padding-bottom: 0; border-bottom: 0; }
+.organization-page .org-invitations .org-person { flex-wrap: wrap; gap: 0.375rem 0.75rem; }
+.organization-page .org-vaults { display: grid; gap: 0.875rem; }
+.organization-page .org-help { padding: 0.75rem 1rem; border: 1px solid #3d3320; border-radius: 0.5rem; background: #1b1812; font-size: 0.8125rem; line-height: 1.7; color: #dfc58b; }
+.organization-page .org-vault { gap: 1.25rem; }
+.org-vault-header { display: flex; align-items: center; gap: 0.875rem; min-width: 0; flex-wrap: wrap; }
+.org-vault-header .org-heading { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.org-your-access { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.access-status { display: inline-block; font-size: 0.6875rem; line-height: 1.5; padding: 0.1875rem 0.5rem; border-radius: 0.375rem; background: var(--zinc-800); color: var(--zinc-300); }
+.access-status--active { color: #9dd6b4; background: #172820; }
+.access-status--pending_key { color: #dfc58b; background: #2b2417; }
+.access-status--revoked { color: var(--red-400); background: #2d181b; }
+.organization-page .invite-result { display: grid; gap: 0.75rem; padding: 1rem; border: 1px solid var(--zinc-700); border-radius: 0.5rem; background: var(--bg); font-size: 0.8125rem; line-height: 1.6; }
+.action-feedback { display: grid; gap: 0.75rem; min-width: 0; }
+.action-feedback .btn { justify-self: start; }
+.organization-page > .action-feedback { margin-bottom: 1rem; }
+.organization-page .org-detail > .btn { justify-self: start; }
+.organization-page .org-settings .action-feedback { margin-top: 0.75rem; }
+@media (max-width: 639px) {
+ .management-page { padding: 1.25rem 1rem 3rem; }
+ .management-topbar { margin-bottom: 2rem; }
+ .management-page .page-title { font-size: 1.625rem; }
+ .management-page .user-badge { max-width: 11rem; }
+ .management-page .org-toolbar { gap: 0.625rem; }
+ .management-page .org-toolbar > .label { width: 100%; }
+ .management-page .org-toolbar .input { flex: 1; width: 0; }
+ .management-page .vaults-toolbar { flex-direction: row; align-items: center; flex-wrap: wrap; }
+ .management-page .vault-card { padding: 1rem; }
+ .organization-page .org-panel { padding: 1.125rem; }
+ .organization-page .org-summary { padding: 0.875rem 1.125rem; }
+ .organization-page .org-panel > .org-panel-heading { margin: -1.125rem -1.125rem 0; padding: 0.875rem 1.125rem; }
+ .org-vault-header .org-your-access { flex-basis: 100%; }
+ .management-page .vault-card { flex-wrap: wrap; }
+ .management-page .vault-card .vault-info { flex-basis: calc(100% - 4rem); }
+ .management-page .vault-delete { margin-left: auto; }
+ .organization-page .org-member-actions { justify-content: flex-end; margin-left: auto; }
+ .organization-page .org-form { grid-template-columns: minmax(0, 1fr); }
+ .organization-page .org-form > .btn { justify-self: start; }
+ .organization-page .org-row > .input { flex: 0 1 auto; max-width: 100%; }
+ .organization-page .org-members .org-person { flex-basis: 9rem; }
+ .organization-page .org-settings .org-inline { grid-template-columns: minmax(0, 1fr); }
+ .organization-page .org-settings .btn { justify-self: end; }
+ .organization-page .org-inline > .input { width: 100%; }
+}
+
+/* Management content: consistent identity, feedback, and empty states. */
+.vault-icon { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; flex-shrink: 0; border: 1px solid var(--zinc-700); border-radius: 0.75rem; background: #1b1b20; color: #b5b4c5; }
+.management-empty { display: grid; justify-items: center; gap: 0.875rem; padding: 2.5rem 1.5rem; border: 1px dashed var(--zinc-700); border-radius: 0.75rem; background: #111113; text-align: center; line-height: 1.7; }
+.management-empty p { max-width: 34rem; }
+.management-empty .empty-guide-title { margin: 0; }
+.management-page .vault-card--failed { border-color: #623237; }
+.management-page .status--error, .management-page .status--success { padding: 0.75rem 1rem; border: 1px solid currentColor; border-radius: 0.5rem; overflow-wrap: anywhere; }
+.management-page .status--error { background: #231416; border-color: #623237; }
+.management-page .status--success { background: #14221a; border-color: #294b36; }
+.management-page .vaults-toolbar > .status { flex: 1; }
+.management-page .vaults-actions { flex-shrink: 0; }
+.organization-page .org-warning { font-size: 0.8125rem; line-height: 1.7; }
+.access-status--expired { color: var(--zinc-400); border: 1px dashed var(--zinc-600); background: transparent; }
+
+
+/* Async feedback preserves the surrounding content and button dimensions. */
+.button-content { position: relative; display: inline-grid; place-items: center; }
+.button-content > .loading-spinner { position: absolute; }
+button[aria-busy="true"] > .button-content > span:last-child { opacity: 0; }
+.loading-spinner { display: inline-block; width: 1rem; height: 1rem; flex-shrink: 0; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: loading-spin 700ms linear infinite; }
+.loading-skeleton { display: grid; gap: 0.75rem; }
+.skeleton-card { display: grid; gap: 0.875rem; padding: 1.5rem; min-height: 7rem; border: 1px solid var(--zinc-800); border-radius: 0.75rem; background: #111113; }
+.skeleton-line { display: block; height: 0.75rem; width: 65%; border-radius: 0.25rem; background: var(--zinc-800); animation: loading-pulse 1.5s ease-in-out infinite; }
+.skeleton-line--title { width: 35%; height: 1rem; }
+.retry-button { align-self: flex-start; margin-bottom: 1rem; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+@keyframes loading-pulse { 50% { opacity: 0.4; } }
+@media (prefers-reduced-motion: reduce) {
+ .loading-spinner, .skeleton-line { animation: none; }
+}
+
+.vault-organization { display: grid; gap: 1rem; min-width: 0; }
+.vault-organization + .vault-organization { margin-top: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--zinc-800); }
+.vault-organization-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem 1rem; }
+.vault-organization-name { min-width: 0; overflow-wrap: anywhere; font-size: 1rem; font-weight: 600; color: var(--zinc-200); }
+.vault-organization-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.vault-organization-empty { display: grid; place-items: center; min-height: 9rem; padding: 2rem 1.5rem; border: 1px solid #262626; border-radius: 0.5rem; background: #0a0a0a; color: #a1a1a1; font-size: 0.875rem; text-align: center; line-height: 1.6; }
+.vault-organization-link { display: inline-flex; align-items: center; gap: 0.5rem; max-width: 100%; color: inherit; text-decoration: none; }
+.vault-organization-link span { min-width: 0; }
+.vault-organization-link svg { flex-shrink: 0; color: var(--zinc-400); }
+.vault-organization-link:hover { color: var(--zinc-100); }
+.vault-organization-link:hover span { text-decoration: underline; text-underline-offset: 0.2em; }
+.vault-organization-link:hover svg { color: inherit; }
+
+/* A shared title rhythm for vault and organization management. */
+.management-header { display: grid; gap: 1rem; margin-bottom: 2.5rem; padding-bottom: 1.75rem; border-bottom: 1px solid var(--zinc-800); }
+.management-header-title { display: flex; align-items: center; gap: 1rem; }
+.management-header-copy { min-width: 0; }
+.management-header .page-title { font-size: 2.125rem; line-height: 1.2; letter-spacing: -0.04em; }
+.management-header .page-eyebrow { margin-bottom: 0.375rem; font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+.management-header .vaults-subtitle { max-width: 42rem; line-height: 1.75; }
+.management-header-feedback { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem 1rem; }
+.management-header-feedback .status { margin: 0; padding: 0; }
+.vault-organization-name { display: flex; align-items: center; gap: 0.625rem; flex: 1; font-size: 1.0625rem; letter-spacing: -0.015em; }
+.vault-organization-header { padding-block: 0.25rem; }
+@media (max-width: 600px) {
+ .management-header { gap: 0.875rem; margin-bottom: 1.75rem; padding-bottom: 1.5rem; }
+ .management-header .page-title { font-size: 1.75rem; }
+ .management-header-title { gap: 0.75rem; }
+}
+
+.account-menu { position: relative; flex-shrink: 0; }
+.account-trigger { display: flex; align-items: center; gap: 0.375rem; padding: 0.25rem; border-radius: 999px; list-style: none; cursor: pointer; color: var(--zinc-500); }
+.account-trigger::-webkit-details-marker { display: none; }
+.account-avatar { display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid #3c3c43; border-radius: 50%; background: #242429; color: #dedee5; font-size: 0.8125rem; font-weight: 600; }
+.account-trigger:hover, .account-menu[open] .account-trigger { color: var(--zinc-200); background: #18181b; }
+.account-menu[open] .account-chevron { transform: rotate(180deg); }
+.account-panel { position: absolute; top: calc(100% + 0.625rem); right: 0; z-index: 20; width: 16rem; max-width: calc(100vw - 2rem); padding: 0.375rem; border: 1px solid #303034; border-radius: 0.875rem; background: #161618; box-shadow: 0 12px 40px rgb(0 0 0 / 0.35); }
+.account-identity { padding: 0.625rem 0.625rem 0.875rem; margin-bottom: 0.375rem; border-bottom: 1px solid var(--zinc-800); overflow-wrap: anywhere; }
+.account-name { color: var(--zinc-200); font-size: 0.8125rem; font-weight: 500; }
+.account-email { margin-top: 0.25rem; color: var(--zinc-400); font-size: 0.75rem; }
+.account-signout { border: 0; background: transparent; cursor: pointer; font-family: inherit; width: 100%; padding: 0.625rem; border-radius: 0.5rem; color: var(--zinc-300); font-size: 0.8125rem; text-align: left; }
+.account-signout .button-content > span:last-child { display: flex; align-items: center; gap: 0.625rem; }
+.account-signout:hover:not(:disabled) { background: var(--zinc-800); color: white; }
+.account-signout:disabled { opacity: 0.5; cursor: wait; }
+
+/* Organization settings use neutral surfaces and restrained controls. */
+.organization-page { --zinc-200: #ededed; --zinc-300: #d4d4d4; --zinc-400: #a1a1a1; --zinc-500: #737373; --zinc-700: #333; --zinc-800: #262626; }
+.organization-page .management-header { gap: 0.75rem; padding-bottom: 2rem; margin-bottom: 2rem; }
+.organization-page .management-header .page-eyebrow { margin-bottom: 0.625rem; font-size: 0.8125rem; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+.organization-page .management-header .page-title { font-size: 2rem; line-height: 1.25; letter-spacing: -0.045em; font-weight: 600; }
+.organization-page .management-header .vaults-subtitle { font-size: 0.875rem; }
+.organization-page .org-toolbar { padding: 0; border: 0; border-radius: 0; background: transparent; margin-bottom: 1.5rem; }
+.organization-page .org-toolbar .input { flex-basis: 16rem; }
+.organization-page .input { min-height: 2.25rem; background-color: #0a0a0a; border-color: #333; border-radius: 0.375rem; box-shadow: none; }
+.organization-page .input:focus { border-color: #888; }
+.organization-page .label { color: #ededed; font-size: 0.8125rem; font-weight: 500; }
+.organization-page .btn { min-height: 2.25rem; padding: 0.5rem 0.75rem; border-radius: 0.375rem; font-size: 0.8125rem; font-weight: 500; box-shadow: none; }
+.organization-page .btn--secondary { background: #0a0a0a; border-color: #333; color: #ededed; }
+.organization-page .btn--secondary:hover:not(:disabled) { background: #1a1a1a; border-color: #555; }
+.organization-page .btn--primary { background: #ededed; color: #0a0a0a; border-color: #ededed; }
+.organization-page .btn--primary:hover:not(:disabled) { background: #ccc; border-color: #ccc; }
+.organization-page .org-heading, .organization-page .org-section-title { letter-spacing: -0.02em; }
+.organization-page .org-count { background: #1a1a1a; color: #a1a1a1; font-size: 0.6875rem; border-radius: 0.25rem; }
+.organization-page .person-avatar { width: 2rem; height: 2rem; background: #171717; border-color: #333; color: #a1a1a1; font-size: 0.75rem; }
+.organization-page .management-empty { background: #0a0a0a; border-color: #292929; border-radius: 0.5rem; }
+@media (max-width: 639px) {
+ .organization-page .management-header .page-title { font-size: 1.75rem; }
+ .organization-page .management-header { padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+ .organization-page .org-toolbar .input { flex-basis: auto; }
+}
+
+.vaults-access-empty { padding: 2rem; border: 1px solid #262626; border-radius: 0.5rem; background: #0a0a0a; }
+.vaults-access-empty .empty-guide-title { font-size: 1rem; color: #ededed; }
+.vaults-access-empty p { max-width: 38rem; font-size: 0.875rem; line-height: 1.75; color: #a1a1a1; }
+
+/* Activation starts in Obsidian; web vault creation is a secondary path. */
+.vault-setup { margin-bottom: 2rem; border: 1px solid #262626; border-radius: 0.5rem; background: #0a0a0a; }
+.vault-setup-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem 1.25rem; padding: 1.25rem; border-bottom: 1px solid #262626; }
+.vault-setup-actions .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 2.5rem; padding: 0.625rem 1rem; border-radius: 0.375rem; font-size: 0.8125rem; line-height: 1.25rem; text-decoration: none; }
+.vault-setup-actions .management-link { color: #a1a1a1; font-size: 0.8125rem; }
+.vault-setup-steps { list-style: none; margin: 0; padding: 0 1.25rem; }
+.vault-setup-steps li { display: flex; align-items: flex-start; gap: 0.875rem; padding: 1.25rem 0; }
+.vault-setup-steps li + li { border-top: 1px solid #262626; }
+.vault-setup-steps li > div { min-width: 0; }
+.vault-setup-steps h3 { color: #ededed; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.375rem; }
+.vault-setup-steps p, .vault-setup-intro { color: #a1a1a1; font-size: 0.875rem; line-height: 1.7; overflow-wrap: anywhere; }
+.vault-setup-check { border-radius: 0 0 calc(0.5rem - 1px) calc(0.5rem - 1px); padding: 1rem 1.25rem; border-top: 1px solid #262626; background: #111; color: #a1a1a1; font-size: 0.8125rem; line-height: 1.7; }
+#connect-guide { width: min(40rem, calc(100vw - 2rem)); }
+#connect-guide .vault-setup { margin: 1.25rem 0 0; }
+#connect-guide .vault-setup-actions .btn { width: auto; }
+@media (max-width: 639px) {
+ .vault-setup-actions { align-items: flex-start; flex-direction: column; }
+ .vault-setup-actions .btn { width: 100%; }
+ .vault-setup-steps, .vault-setup-actions { padding-inline: 1rem; }
+}
+
+#connect-guide .dialog-title { overflow-wrap: anywhere; }
+#connect-guide .dialog-footer { position: sticky; bottom: 0; background: #111; }

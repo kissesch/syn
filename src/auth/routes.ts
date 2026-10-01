@@ -13,14 +13,21 @@ export function registerAuthRoutes(
 		url.pathname = "/api/auth/verify-email";
 		return authHttpHandler(new Request(url.toString(), c.req.raw));
 	});
-	app.all("/api/auth/*", (c) =>
-		authHttpHandler(
-			normalizeDeviceAuthorizationRequest(
-				normalizeBearerSessionRequest(c.req.raw),
-				authOrigin,
-			),
-		),
-	);
+	for (const basePath of ["/api/auth", "/v1/auth"]) {
+		app.all(`${basePath}/*`, (c) => {
+			const url = new URL(c.req.url);
+			// Both public paths share the same Better Auth instance and sessions.
+			// Providers explicitly generate OAuth callbacks under /v1/auth.
+			url.pathname = `/api/auth${url.pathname.slice(basePath.length)}`;
+			const request = new Request(url.toString(), c.req.raw);
+			return authHttpHandler(
+				normalizeDeviceAuthorizationRequest(
+					normalizeBearerSessionRequest(request),
+					authOrigin,
+				),
+			);
+		});
+	}
 }
 
 export function normalizeDeviceAuthorizationRequest(
