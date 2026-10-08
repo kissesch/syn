@@ -44,7 +44,7 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
   const [statusAction, setStatusAction] = useState("");
   const [refreshRequired, setRefreshRequired] = useState(false);
   const [retry, setRetry] = useState(0);
-  const [status, setStatus] = useState<StatusValue>({ message: t("loading") });
+  const [status, setStatus] = useState<StatusValue>({ message: "" });
 
   function applyOrganization(detail: Organization) {
     if (!canManage(detail)) {
@@ -65,7 +65,7 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
   useEffect(() => {
     const controller = new AbortController();
     setBusy(true);
-    setStatus({ message: t("loading") });
+    setStatus({ message: "" });
     async function initialize() {
       try {
         const session = await getSession(t("failed"), controller.signal);
@@ -122,7 +122,7 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
     if (key !== "refresh") setStatusAction(key);
     const isRead = key === "switch" || key === "refresh";
     let committed = false;
-    setStatus({ message: t(isRead ? "loading" : "working") });
+    setStatus({ message: isRead ? "" : t("working") });
     try {
       const message = await action();
       committed = !isRead;
@@ -213,11 +213,9 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
       </div>
       <ManagementHeader
         id="organization-header"
-        eyebrow={t("organization")}
         title={(pendingAction === "switch"
           ? organizations.find((item) => item.id === selectedId)?.name
           : organization?.name) ?? t("title")}
-        subtitle={t("subtitle")}
       />
       {organizations.length > 1 && (
         <div id="organization-toolbar" className="org-toolbar">
@@ -254,20 +252,12 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
         {busy && (!organization || pendingAction === "switch") && <LoadingSkeleton />}
         {organization && props && pendingAction !== "switch" && (
           <>
+            {!organization.sharing.enabled && (
+              <SharingNotice organization={organization} billingUrl={billingUrl} t={t} />
+            )}
             <section className="org-panel org-summary">
-              {!organization.sharing.enabled && (
-                <p className="org-warning">
-                  {t(
-                    organization.vaults.some((vault) => vault.shared)
-                      ? "suspended"
-                      : "sharingRequired",
-                  )}
-                </p>
-              )}
-              {billingUrl && (
-                <a href={billingUrl} className="org-billing">
-                  {t("billing")}
-                </a>
+              {organization.sharing.enabled && billingUrl && (
+                <a href={billingUrl} className="org-billing">{t("billing")}</a>
               )}
               <div className="org-settings">
                 <form
@@ -311,7 +301,6 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
             <section className="org-vaults">
               <div className="org-panel-heading">
                 <h2 className="org-section-title">{t("vaults")}</h2>
-                <span className="org-count">{organization.vaults.length}</span>
               </div>
               {organization.vaults.some(
                 (vault) =>
@@ -324,16 +313,10 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
                 <section key={vault.id} className="org-panel org-vault">
                   <div className="org-vault-header">
                     <h3 className="org-heading">{vault.name}</h3>
-                    <p className="vault-meta org-your-access">
-                      {t("yourAccess")}: {" "}
-                      <span className={`access-status access-status--${vault.status ?? "noAccess"}`}>
-                        {t(vault.status ?? "noAccess")}
-                      </span>
-                    </p>
+                    {vault.shared && !organization.sharing.enabled && (
+                      <span className="org-sync-paused">{t("syncPaused")}</span>
+                    )}
                   </div>
-                  {vault.shared && !organization.sharing.enabled && (
-                    <p className="org-warning">{t("suspended")}</p>
-                  )}
                   <div className="org-rows">
                     {vault.members.map((member) => (
                       <div
@@ -383,6 +366,23 @@ export function OrganizationsPage({ t, locale }: PageProps<"organizations">) {
     </main>
   );
 }
+function SharingNotice({ organization, billingUrl, t }: {
+  organization: Organization;
+  billingUrl?: string | null;
+  t: Translator<"organizations">;
+}) {
+  const paused = organization.vaults.some((vault) => vault.shared);
+  return (
+    <section className={`org-sharing-notice${paused ? " org-sharing-notice--paused" : ""}`} aria-labelledby="sharing-notice-title">
+      <div className="org-sharing-copy">
+        <h2 id="sharing-notice-title">{t(paused ? "sharingPausedTitle" : "sharingUpgradeTitle")}</h2>
+        <p>{t(paused ? "sharingPausedBody" : "sharingUpgradeBody")}</p>
+        {!billingUrl && <p>{t("sharingContactOwner")}</p>}
+      </div>
+      {billingUrl && <a className="btn btn--primary btn--compact" href={billingUrl}>{t(paused ? "restoreSharing" : "startPlus")}</a>}
+    </section>
+  );
+}
 function ActionButton({
   children,
   danger,
@@ -413,15 +413,11 @@ function Members({ organization, busy, pendingAction, feedbackFor, t, perform, a
     <section className="org-panel org-members">
       <div className="org-panel-heading">
         <h2 className="org-heading">{t("members")}</h2>
-        <span className="org-count">{organization.members.length}</span>
       </div>
       <div className="org-rows">
         {organization.members.map((member) => (
           <div key={member.id} className="org-row">
             <div className="org-person">
-              <span className="person-avatar" aria-hidden="true">
-                {(member.name || member.email).slice(0, 1).toUpperCase()}
-              </span>
               <div className="org-person-info">
                 <span className="org-person-name">{member.name}</span>
                 <span className="vault-meta">{member.email}</span>
@@ -513,18 +509,13 @@ function Invitations({
     event.preventDefault();
     void perform(() => send("/invitations", { email, role }), "invite");
   }
-  if (!organization.sharing.enabled && !pending.length) {
-    return <>{feedbackFor("cancel")}{feedbackFor("resend")}</>;
-  }
   return (
     <section className="org-panel org-invitations">
       <div className="org-panel-heading">
         <h2 className="org-heading">{t("invitations")}</h2>
-        <span className="org-count">{pending.length}</span>
       </div>
       {organization.sharing.enabled && (
         <div className="org-invite-form">
-          <h3 className="org-list-title">{t("invite")}</h3>
           <form className="org-form" onSubmit={submit}>
             <Field label={t("email")}>
               <input

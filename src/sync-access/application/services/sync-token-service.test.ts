@@ -71,7 +71,7 @@ describe("IssueSyncTokenService", () => {
 		expect(signer.signSyncToken).not.toHaveBeenCalled();
 	});
 
-	it("rejects token issuance while coordinator sync is paused", async () => {
+	it("temporarily issues tokens while paused so legacy clients can reach quota-stop uploads", async () => {
 		const vaultService = {
 			getAccessibleVault: vi.fn(async () => accessibleVault()),
 		} as unknown as VaultService;
@@ -91,7 +91,19 @@ describe("IssueSyncTokenService", () => {
 				localVaultId: "local-vault-1",
 				displayName: "Ada",
 			}),
-		).rejects.toMatchObject({ code: "sync_paused" });
-		expect(signer.signSyncToken).not.toHaveBeenCalled();
+		).resolves.toMatchObject({ token: "token" });
+		expect(signer.signSyncToken).toHaveBeenCalled();
 	});
+});
+
+it("checks live access before allowing an explicit server resume", async () => {
+	const vaultService = { getAccessibleVault: vi.fn(async () => accessibleVault()) } as unknown as VaultService;
+	const signer = { signSyncToken: vi.fn(async () => "token") };
+	const pauseReader = { readSyncPause: vi.fn(async () => ({ pausedAt: 1, reason: "manual: pause" })) };
+	const resumer = { resumeSync: vi.fn(async () => {}) };
+	const accessReader = vi.fn(async () => { throw new Error("membership revoked"); });
+	const issuer = new IssueSyncTokenService(vaultService, signer, pauseReader, 120, accessReader, resumer);
+	await expect(issuer.issueSyncToken({ userId: "user-1", vaultId: "vault-1", localVaultId: "device", displayName: "User", resumeSync: true })).rejects.toThrow("membership revoked");
+	expect(resumer.resumeSync).not.toHaveBeenCalled();
+	expect(signer.signSyncToken).not.toHaveBeenCalled();
 });

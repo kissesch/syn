@@ -86,7 +86,7 @@
   },
   "vaults": {
     "setupTitle": "Start syncing your Obsidian vault",
-    "setupIntro": "Your account is ready. Next, set up Synch inside Obsidian to sync your notes. Creating a vault on this website alone does not start syncing.",
+    "setupIntro": "Install Synch in Obsidian to start syncing your notes.",
     "setupSteps": "Set up Synch in Obsidian",
     "setupInstall": "Get Synch for Obsidian",
     "setupInstalled": "Already installed? Open Synch settings",
@@ -112,6 +112,8 @@
     "loading": "Loading vaults...",
     "retry": "Try again",
     "refresh": "Refresh",
+    "vaultActions": "Actions for {name}",
+    "manageOrganization": "Manage {name}",
     "createVault": "Create vault",
     "createTitle": "Create remote vault",
     "createIntro": "The vault key is generated in your browser and encrypted with your vault password. The password and the unencrypted key are never sent to the server.",
@@ -167,6 +169,14 @@
     "deletionStatus": "Deletion {status}"
   },
   "organizations": {
+    "sharingUpgradeTitle": "Share vaults with Plus",
+    "sharingUpgradeBody": "Invite members and sync vaults together with Plus.",
+    "sharingPausedTitle": "Shared sync is paused",
+    "sharingPausedBody": "Activate Plus to resume shared sync. Your data is preserved.",
+    "startPlus": "Get Plus",
+    "restoreSharing": "Restore shared sync",
+    "sharingContactOwner": "Contact your server administrator to restore sharing.",
+    "syncPaused": "Shared sync paused",
     "savedRefreshFailed": "Changes saved, but the latest data could not be loaded. Refresh to continue.",
     "linkReady": "Invitation link ready.",
     "loading": "Loading organization…",

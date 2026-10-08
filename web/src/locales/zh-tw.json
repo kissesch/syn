@@ -86,7 +86,7 @@
   },
   "vaults": {
     "setupTitle": "開始同步你的 Obsidian vault",
-    "setupIntro": "帳戶已準備好。接下來請在 Obsidian 中設定 Synch。在此網站建立 vault 並不會自動開始同步。",
+    "setupIntro": "在 Obsidian 中安裝 Synch，開始同步筆記。",
     "setupSteps": "在 Obsidian 中設定 Synch",
     "setupInstall": "安裝 Obsidian 版 Synch",
     "setupInstalled": "已安裝？開啟 Synch 設定",
@@ -110,6 +110,8 @@
     "loading": "正在載入 vault...",
     "retry": "重試",
     "refresh": "重新整理",
+    "vaultActions": "{name} 的操作",
+    "manageOrganization": "管理 {name}",
     "createVault": "建立 vault",
     "createTitle": "建立遠端 vault",
     "createIntro": "Vault 金鑰會在瀏覽器中產生並以 vault 密碼加密。密碼與未加密的金鑰絕不會傳送到伺服器。",
@@ -167,6 +169,14 @@
     "organizations": "管理組織"
   },
   "organizations": {
+    "sharingUpgradeTitle": "使用 Plus 共用 Vault",
+    "sharingUpgradeBody": "使用 Plus 邀請成員並一起同步 Vault。",
+    "sharingPausedTitle": "共用同步已暫停",
+    "sharingPausedBody": "啟用 Plus 即可恢復共用同步。資料會保留。",
+    "startPlus": "啟用 Plus",
+    "restoreSharing": "恢復共用同步",
+    "sharingContactOwner": "請聯絡伺服器管理員恢復共用功能。",
+    "syncPaused": "共用同步已暫停",
     "savedRefreshFailed": "變更已儲存，但無法載入最新資訊。請重新整理後繼續。",
     "linkReady": "邀請連結已產生。",
     "loading": "正在載入組織…",

@@ -86,7 +86,7 @@
   },
   "vaults": {
     "setupTitle": "Synchronisiere deinen Obsidian-Vault",
-    "setupIntro": "Dein Konto ist bereit. Richte jetzt Synch in Obsidian ein. Das Erstellen eines Vaults auf dieser Website allein startet noch keine Synchronisierung.",
+    "setupIntro": "Installiere Synch in Obsidian, um deine Notizen zu synchronisieren.",
     "setupSteps": "Synch in Obsidian einrichten",
     "setupInstall": "Synch für Obsidian installieren",
     "setupInstalled": "Schon installiert? Synch-Einstellungen öffnen",
@@ -110,6 +110,8 @@
     "loading": "Vaults werden geladen...",
     "retry": "Erneut versuchen",
     "refresh": "Aktualisieren",
+    "vaultActions": "Aktionen für {name}",
+    "manageOrganization": "{name} verwalten",
     "createVault": "Vault erstellen",
     "createTitle": "Remote-Vault erstellen",
     "createIntro": "Der Vault-Schlüssel wird im Browser erzeugt und mit dem Vault-Passwort verschlüsselt. Passwort und unverschlüsselter Schlüssel werden nicht an den Server gesendet.",
@@ -167,6 +169,14 @@
     "organizations": "Organisationen verwalten"
   },
   "organizations": {
+    "sharingUpgradeTitle": "Vaults mit Plus teilen",
+    "sharingUpgradeBody": "Lade mit Plus Mitglieder ein und synchronisiert Vaults gemeinsam.",
+    "sharingPausedTitle": "Gemeinsame Synchronisierung pausiert",
+    "sharingPausedBody": "Aktiviere Plus, um die gemeinsame Synchronisierung fortzusetzen. Deine Daten bleiben erhalten.",
+    "startPlus": "Plus aktivieren",
+    "restoreSharing": "Synchronisierung fortsetzen",
+    "sharingContactOwner": "Wende dich an die Serververwaltung, um das Teilen wieder zu aktivieren.",
+    "syncPaused": "Gemeinsame Synchronisierung pausiert",
     "savedRefreshFailed": "Änderungen gespeichert, aber die aktuellen Daten konnten nicht geladen werden. Zum Fortfahren aktualisieren.",
     "linkReady": "Einladungslink erstellt.",
     "loading": "Organisation wird geladen…",

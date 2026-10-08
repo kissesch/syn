@@ -86,7 +86,7 @@
   },
   "vaults": {
     "setupTitle": "Obsidian の Vault を同期しましょう",
-    "setupIntro": "アカウントの準備ができました。次に Obsidian 内で Synch を設定してください。このサイトで Vault を作成するだけでは同期は始まりません。",
+    "setupIntro": "ObsidianにSynchをインストールして、ノートの同期を始めましょう。",
     "setupSteps": "Obsidian で Synch を設定",
     "setupInstall": "Obsidian 用 Synch を入手",
     "setupInstalled": "インストール済みですか？ Synch 設定を開く",
@@ -110,6 +110,8 @@
     "loading": "Vaultを読み込み中...",
     "retry": "再試行",
     "refresh": "更新",
+    "vaultActions": "{name} の操作",
+    "manageOrganization": "{name} を管理",
     "createVault": "Vault を作成",
     "createTitle": "リモート vault を作成",
     "createIntro": "Vault キーはブラウザ内で生成され、vault パスワードで暗号化されます。パスワードと暗号化されていないキーがサーバーに送信されることはありません。",
@@ -167,6 +169,14 @@
     "organizations": "組織を管理"
   },
   "organizations": {
+    "sharingUpgradeTitle": "Plus で Vault を共有",
+    "sharingUpgradeBody": "Plus でメンバーを招待し、Vault を一緒に同期できます。",
+    "sharingPausedTitle": "共有同期は一時停止中です",
+    "sharingPausedBody": "Plus を有効にすると共有同期が再開します。データは保持されます。",
+    "startPlus": "Plus を始める",
+    "restoreSharing": "共有同期を再開",
+    "sharingContactOwner": "共有機能を復旧するには、サーバー管理者にお問い合わせください。",
+    "syncPaused": "共有同期は停止中",
     "savedRefreshFailed": "変更は保存されましたが、最新の情報を読み込めませんでした。更新して続行してください。",
     "linkReady": "招待リンクを作成しました。",
     "loading": "組織を読み込み中…",

@@ -1,3 +1,5 @@
+import { VaultActions } from "../components/vault-actions";
+import { VaultIcon } from "../components/vault-icon";
 import { VaultSetup } from "../components/vault-setup";
 import { AccountMenu } from "../components/account-menu";
 import { ManagementHeader } from "../components/management-header";
@@ -36,7 +38,7 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
   const [retry, setRetry] = useState(0);
   const [refreshRequired, setRefreshRequired] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [status, setStatus] = useState<StatusValue>({ message: t("loading") });
+  const [status, setStatus] = useState<StatusValue>({ message: "" });
   const [creating, setCreating] = useState<OrganizationSummary | null>(null);
   const [deleting, setDeleting] = useState<Vault | null>(null);
   const [connecting, setConnecting] = useState<string | null>(null);
@@ -52,7 +54,7 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
         signal: controller.signal,
       };
       setLoading(true);
-      if (!background) setStatus({ message: t("loading") });
+      if (!background) setStatus({ message: "" });
       try {
         const result = await request<{ organizations: OrganizationSummary[] }>(
           "/v1/organizations",
@@ -81,11 +83,7 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
         setLoaded(true);
         setRefreshRequired(false);
         setStatus({
-          message:
-            successMessage ??
-            (items.length === 1
-              ? t("countOne")
-              : t("countMany", { count: items.length })),
+          message: successMessage ?? "",
         });
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -107,7 +105,7 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    setStatus({ message: t("loading") });
+    setStatus({ message: "" });
     void getSession(t("apiUnavailable"), controller.signal)
       .then(async (session) => {
         if (controller.signal.aborted) return;
@@ -171,15 +169,15 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
   }
   return (
     <>
-      <main className="page page--wide management-page">
+      <main className={`page page--wide management-page vaults-page${firstVault ? " vaults-page--empty" : ""}`}>
         <div className="topbar management-topbar">
           <Brand />
           {user && (
             <AccountMenu user={user} t={t} busy={loggingOut} onSignOut={() => void logout()} />
           )}
         </div>
-        <ManagementHeader title={t(firstVault ? "setupTitle" : "title")} subtitle={t(firstVault ? "setupIntro" : "subtitle")}>
-          <div className="management-header-feedback">
+        <ManagementHeader title={t(firstVault ? "setupTitle" : "title")} subtitle={firstVault ? t("setupIntro") : undefined}>
+          {status.message && <div className="management-header-feedback">
             {(!firstVault || status.tone || loading) && <Status {...status} className="status--bar" />}
             {status.tone === "error" && !loading && (
               <button
@@ -190,7 +188,7 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
                 {t("retry")}
               </button>
             )}
-          </div>
+          </div>}
         </ManagementHeader>
         {firstVault && <VaultSetup t={t} email={user?.email ?? ""} />}
         {!firstVault && <section id="vault-list" className="vault-list" aria-busy={loading}>
@@ -201,7 +199,7 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
               <section key={organization.id} className="vault-organization" aria-labelledby={`organization-${organization.id}`}>
                 <div className="vault-organization-header">
                   <h2 id={`organization-${organization.id}`} className="vault-organization-name">
-                    <a className="vault-organization-link" href={localUrl("/organizations", locale, { organizationId: organization.id })}>
+                    <a className="vault-organization-link" title={t("manageOrganization", { name: organization.name })} href={localUrl("/organizations", locale, { organizationId: organization.id })}>
                       <span>{organization.name}</span>
                       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M7 17 17 7M7 7h10v10" />
@@ -219,13 +217,14 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
                         void loadVaultCrypto().catch(() => {});
                       }}
                     >
-                      {t("createVault")}
+                      <span aria-hidden="true">＋</span> {t("createVault")}
                     </button>
                   </div>
                 </div>
                 <div className="vault-list">
                   {organizationVaults.map((vault) => (
                     <article key={vault.id} className={`vault-card${vault.deletionStatus === "failed" ? " vault-card--failed" : ""}`}>
+                      <VaultIcon />
                       <div className="vault-info">
                         <h3 className="vault-name">{vault.name}</h3>
                         <p className="vault-meta">{createdDate(vault)}</p>
@@ -239,14 +238,12 @@ export function VaultsPage({ t, locale }: PageProps<"vaults">) {
                         )}
                       </div>
                       {canManage(organization) && (
-                        <button
-                          type="button"
-                          className="btn btn--danger btn--compact vault-delete"
+                        <VaultActions
+                          name={vault.name}
+                          t={t}
                           disabled={loading || refreshRequired || isDeleting(vault)}
-                          onClick={() => setDeleting(vault)}
-                        >
-                          {t(isDeleting(vault) ? "deleting" : "delete")}
-                        </button>
+                          onDelete={() => setDeleting(vault)}
+                        />
                       )}
                     </article>
                   ))}

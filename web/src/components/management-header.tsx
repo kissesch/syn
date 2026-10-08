@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 export function ManagementHeader({ id, title, subtitle, eyebrow, children }: {
   id?: string;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   eyebrow?: string;
   children?: ReactNode;
 }) {
@@ -15,7 +15,7 @@ export function ManagementHeader({ id, title, subtitle, eyebrow, children }: {
           <h1 className="page-title">{title}</h1>
         </div>
       </div>
-      <p className="vaults-subtitle">{subtitle}</p>
+      {subtitle && <p className="vaults-subtitle">{subtitle}</p>}
       {children}
     </header>
   );

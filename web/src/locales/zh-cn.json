@@ -86,7 +86,7 @@
   },
   "vaults": {
     "setupTitle": "开始同步你的 Obsidian vault",
-    "setupIntro": "账户已准备好。接下来请在 Obsidian 中设置 Synch。在此网站创建 vault 并不会自动开始同步。",
+    "setupIntro": "在 Obsidian 中安装 Synch，开始同步笔记。",
     "setupSteps": "在 Obsidian 中设置 Synch",
     "setupInstall": "安装 Obsidian 版 Synch",
     "setupInstalled": "已安装？打开 Synch 设置",
@@ -110,6 +110,8 @@
     "loading": "正在加载 vault...",
     "retry": "重试",
     "refresh": "刷新",
+    "vaultActions": "{name} 的操作",
+    "manageOrganization": "管理 {name}",
     "createVault": "创建 vault",
     "createTitle": "创建远程 vault",
     "createIntro": "Vault 密钥在浏览器中生成并使用 vault 密码加密。密码和未加密的密钥永远不会发送到服务器。",
@@ -167,6 +169,14 @@
     "organizations": "管理组织"
   },
   "organizations": {
+    "sharingUpgradeTitle": "使用 Plus 共享 Vault",
+    "sharingUpgradeBody": "使用 Plus 邀请成员并一起同步 Vault。",
+    "sharingPausedTitle": "共享同步已暂停",
+    "sharingPausedBody": "启用 Plus 即可恢复共享同步。数据会保留。",
+    "startPlus": "开通 Plus",
+    "restoreSharing": "恢复共享同步",
+    "sharingContactOwner": "请联系服务器管理员恢复共享功能。",
+    "syncPaused": "共享同步已暂停",
     "savedRefreshFailed": "更改已保存，但无法加载最新信息。请刷新后继续。",
     "linkReady": "邀请链接已生成。",
     "loading": "正在加载组织…",

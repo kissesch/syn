@@ -332,10 +332,19 @@ describe("vault safety", () => {
     expect(screen.queryByText("Member vault")).toBeNull();
     expect(screen.queryByRole("combobox")).toBeNull();
     expect(within(screen.getByRole("region", { name: "Second organization" })).getByText("Other organization")).toBeTruthy();
-    expect(
-      (screen.getByRole("button", { name: "Deleting" }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(true);
+    const queuedActions = screen.getByLabelText("Actions for Visible");
+    expect(queuedActions.getAttribute("aria-disabled")).toBe("true");
+    await userEvent.click(queuedActions);
+    expect(queuedActions.closest("details")?.open).toBe(false);
+    const actions = screen.getByLabelText("Actions for Other organization");
+    await userEvent.click(actions);
+    await userEvent.keyboard("{Escape}");
+    expect(actions.closest("details")?.open).toBe(false);
+    expect(document.activeElement).toBe(actions);
+    await userEvent.click(actions);
+    await userEvent.click(within(actions.closest("details")!).getByRole("button", { name: "Delete" }));
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Cancel" }));
     cryptoMock.createPasswordWrappedRemoteVaultKey.mockResolvedValue({
       envelope: { version: 1 }, remoteVaultKey: new Uint8Array([1, 2, 3]),
     });
@@ -501,7 +510,6 @@ describe("management loading feedback", () => {
     await screen.findByRole("heading", { name: "My organization" });
     await userEvent.selectOptions(screen.getByLabelText("Organization"), "org-2");
     expect(screen.queryByLabelText("Email address")).toBeNull();
-    expect(screen.getByText("Loading organization…")).toBeTruthy();
     await act(async () => switching.resolve(json({ message: "Try again" }, 503)));
     await screen.findByText("Try again");
     expect((screen.getByLabelText("Organization") as HTMLSelectElement).value).toBe("org-1");

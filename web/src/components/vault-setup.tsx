@@ -10,6 +10,9 @@ export function VaultSetup({ t, email, vaultName }: {
     <section className="vault-setup" aria-label={t("setupSteps")}>
       <div className="vault-setup-actions">
         <a className="btn btn--primary btn--compact" href="https://community.obsidian.md/plugins/synch" target="_blank" rel="noreferrer">
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4" />
+          </svg>
           {t("setupInstall")}
         </a>
         <a className="management-link" href="obsidian://synch-device-login">{t("setupInstalled")}</a>
@@ -37,7 +40,6 @@ export function VaultSetup({ t, email, vaultName }: {
           </div>
         </li>
       </ol>
-      <p className="vault-setup-check">{t("setupVerify")}</p>
     </section>
   );
 }

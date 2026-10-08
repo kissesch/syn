@@ -62,7 +62,8 @@ export const DeleteDialog: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByText("Personal notes");
-    await userEvent.click(canvas.getAllByRole("button", { name: "Delete" })[0]);
+    await userEvent.click(canvas.getByLabelText("Actions for Personal notes"));
+    await userEvent.click(canvas.getByRole("button", { name: "Delete" }));
   },
 };
 

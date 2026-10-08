@@ -56,10 +56,12 @@ export class EntryService {
 			targetCursor,
 			message.after,
 			effectiveLimit + 1,
+			message.entryIds,
 		);
 		const totalEntries = this.unitOfWork.stores.entries.countEntryStates(
 			message.sinceCursor,
 			targetCursor,
+			message.entryIds,
 		);
 		const hasMore = entries.length > effectiveLimit;
 		const page = hasMore ? entries.slice(0, effectiveLimit) : entries;
@@ -427,6 +429,7 @@ export class EntryService {
 		const candidateBlobIds = new Set<string>();
 		for (const entry of message.entries) {
 			const outcome = this.unitOfWork.run((stores) => {
+				if (stores.state.readSyncPause()) throw new SyncCoordinatorApplicationError("sync_paused");
 				const current = stores.entries.readMutationEntry(entry.entryId);
 				const facts = {
 					current,

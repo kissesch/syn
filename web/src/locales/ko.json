@@ -86,7 +86,7 @@
   },
   "vaults": {
     "setupTitle": "Obsidian vault 동기화를 시작하세요",
-    "setupIntro": "계정은 준비됐습니다. 이제 Obsidian 안에서 Synch를 설정하면 노트를 동기화할 수 있습니다. 웹에서 vault를 생성하는 것만으로는 동기화가 시작되지 않습니다.",
+    "setupIntro": "Obsidian에 Synch를 설치하고 노트 동기화를 시작하세요.",
     "setupSteps": "Obsidian에서 Synch 설정",
     "setupInstall": "Obsidian용 Synch 설치하기",
     "setupInstalled": "이미 설치했나요? Synch 설정 열기",
@@ -110,6 +110,8 @@
     "loading": "Vault 불러오는 중...",
     "retry": "다시 시도",
     "refresh": "새로고침",
+    "vaultActions": "{name} 작업",
+    "manageOrganization": "{name} 관리",
     "createVault": "Vault 생성",
     "createTitle": "원격 vault 생성",
     "createIntro": "Vault 키는 브라우저에서 생성되어 vault 비밀번호로 암호화됩니다. 비밀번호와 암호화되지 않은 키는 서버로 전송되지 않습니다.",
@@ -167,6 +169,14 @@
     "organizations": "조직 관리"
   },
   "organizations": {
+    "sharingUpgradeTitle": "Plus로 vault를 공유하세요",
+    "sharingUpgradeBody": "Plus로 멤버를 초대하고 vault를 함께 동기화하세요.",
+    "sharingPausedTitle": "공유 동기화가 일시 중지되었습니다",
+    "sharingPausedBody": "Plus를 활성화하면 공유 동기화가 재개됩니다. 데이터는 보존됩니다.",
+    "startPlus": "Plus 시작하기",
+    "restoreSharing": "공유 동기화 재개하기",
+    "sharingContactOwner": "공유 기능을 복구하려면 서버 관리자에게 문의하세요.",
+    "syncPaused": "공유 동기화 중지",
     "savedRefreshFailed": "변경 사항은 저장됐지만 최신 정보를 불러오지 못했습니다. 새로고침 후 계속하세요.",
     "linkReady": "초대 링크가 준비됐습니다.",
     "loading": "조직 불러오는 중…",
