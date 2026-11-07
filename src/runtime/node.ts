@@ -6,6 +6,7 @@ import { migrate as migrateLibsql } from "drizzle-orm/libsql/migrator";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 
+import type { OidcProviderConfig } from "../auth/policies/oidc";
 import { createApiApplication } from "../composition/create-api-application";
 import { NODE_COMMUNITY_PROFILE } from "../config/deployment-profile";
 import { resolveNodeAsset } from "../config/node-assets";
@@ -36,13 +37,17 @@ export interface NodeRuntimeConfig {
 	publicUrl: string;
 	corsOrigin?: string;
 	betterAuthSecret: string;
-	authAllowedEmails: string;
+	authAllowedEmails?: string;
+	/** Left unset, email/password stays enabled -- see AuthFeatureConfig.emailAndPassword. */
+	emailAndPassword?: "enabled" | "disabled";
+	oidc?: OidcProviderConfig;
 	googleClientId?: string;
 	googleClientSecret?: string;
 	githubClientId?: string;
 	githubClientSecret?: string;
 	syncTokenSecret: string;
 	syncTokenTtlSeconds?: number;
+	versionHistoryRetentionDays?: number;
 	blobStorage: BlobObjectStorage;
 	/** Defaults to the drizzle/*.sql folder shared with the D1 (Cloudflare) backend. */
 	migrationsFolder?: string;
@@ -81,6 +86,7 @@ export async function createNodeRuntime(config: NodeRuntimeConfig) {
 		syncTokenTtlSeconds: config.syncTokenTtlSeconds,
 		profile: NODE_COMMUNITY_PROFILE,
 		productIdsByPlanId: {},
+		selfHostedVersionHistoryRetentionDays: config.versionHistoryRetentionDays,
 	});
 	const application = createApiApplication(
 		{
@@ -101,10 +107,13 @@ export async function createNodeRuntime(config: NodeRuntimeConfig) {
 				googleClientSecret: config.googleClientSecret,
 				githubClientId: config.githubClientId,
 				githubClientSecret: config.githubClientSecret,
+				oidc: config.oidc,
+				emailAndPassword: config.emailAndPassword,
 			},
 			syncTokenSecret: config.syncTokenSecret,
 			syncTokenTtlSeconds: config.syncTokenTtlSeconds,
 			productIdsByPlanId: {},
+			selfHostedVersionHistoryRetentionDays: config.versionHistoryRetentionDays,
 		},
 	);
 

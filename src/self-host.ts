@@ -41,8 +41,11 @@ async function main(): Promise<void> {
 		googleClientSecret: config.googleClientSecret,
 		githubClientId: config.githubClientId,
 		githubClientSecret: config.githubClientSecret,
+		emailAndPassword: config.emailAndPassword,
+		oidc: config.oidc,
 		syncTokenSecret: config.syncTokenSecret,
 		syncTokenTtlSeconds: config.syncTokenTtlSeconds,
+		versionHistoryRetentionDays: config.versionHistoryRetentionDays,
 		blobStorage,
 	});
 
